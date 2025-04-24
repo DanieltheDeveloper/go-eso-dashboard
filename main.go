@@ -40,6 +40,18 @@ func main() {
 	http.Handle("/", &app.Handler{
 		Name:        "ESO Dashboard",
 		Description: "Simple Go ESO dashboard with caching support for local deployment",
+		Icon: app.Icon{
+			Default:  "web/eso.png",
+			Large:    "web/eso.png",
+			SVG:      "web/eso.svg",
+			Maskable: "web/eso-maskable.png",
+		},
+		Styles: []string{
+			"/web/eso-dashboard.css",
+		},
+		CacheableResources: []string{
+			"/web/background-video.mp4",
+		},
 	})
 
 	if err := http.ListenAndServe(":8000", nil); err != nil {
