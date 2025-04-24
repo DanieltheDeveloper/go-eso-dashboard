@@ -38,8 +38,12 @@ func main() {
 	// required resources to make it work into a web browser. Here it is
 	// configured to handle requests with a path that starts with "/".
 	http.Handle("/", &app.Handler{
-		Name:        "ESO Dashboard",
-		Description: "Simple Go ESO dashboard with caching support for local deployment",
+		Name:         "ESO Dashboard",
+		ShortName:    "ESO Dashboard",
+		LoadingLabel: "ESO data is loading ... {progress}%",
+		Lang:         "en",
+		Author:       "DanielTheDeveloper",
+		Description:  "Simple Go ESO dashboard with caching support for local deployment",
 		Icon: app.Icon{
 			Default:  "web/eso.png",
 			Large:    "web/eso.png",
