@@ -39,8 +39,9 @@ func main() {
 	// configured to handle requests with a path that starts with "/".
 	http.Handle("/", &app.Handler{
 		Name:         "ESO Dashboard",
+		Title:        "ESO Dashboard",
 		ShortName:    "ESO Dashboard",
-		LoadingLabel: "ESO data is loading ... {progress}%",
+		LoadingLabel: "ESO Dashboard data is loading ... {progress}%",
 		Lang:         "en",
 		Author:       "DanielTheDeveloper",
 		Description:  "Simple Go ESO dashboard with caching support for local deployment",
@@ -51,6 +52,7 @@ func main() {
 			Maskable: "web/eso-maskable.png",
 		},
 		Styles: []string{
+			"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css",
 			"/web/eso-dashboard.css",
 		},
 		CacheableResources: []string{
@@ -58,6 +60,8 @@ func main() {
 		},
 	})
 
+	// The server is started on port 8000. The ListenAndServe function is a blocking
+	// call, which means that the code below it will never be executed.
 	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatal(err)
 	}

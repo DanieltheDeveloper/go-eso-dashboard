@@ -1,70 +1,48 @@
-# Flask ESO Dashboard
+# Go-App ESO Dashboard
 
-Simple Flask ESO dashboard with caching support for local deployment
-
-You can find a demo here: https://flask-eso-dashboard.onrender.com/ Currently running [feature/fastapi](https://github.com/DanieltheDeveloper/flask-eso-dashboard/tree/feature/fastapi) branch 
+Simple Go-App PWA ESO dashboard with caching support for local deployment
 
 ![Project Overview](readme.png)
 
 ## Features
 
 - ESO player count, server status and RSS feed from ESO hub.
-- Versioned API.
 - Easy to extend and customize.
 
 ## Requirements
 
-- Python 3.7 or higher
-- Flask
+- Go 1.24.1
 
 ## Installation
 
 1. Clone the repository:
     ```bash
     git clone <repository-url>
-    cd flask-eso-dashboard
+    cd go-eso-dashboard
     ```
 
-2. Create a virtual environment and activate it:
+2. Install dependencies:
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    ```
-
-3. Install dependencies:
-    ```bash
-    pip install -r requirements.txt
+    go mod vendor
     ```
 
 ## Usage
 
-1. Run the Flask application:
+1. Run the application:
     ```bash
-    flask run
+        go build # For binary
+        go build -o web/app.wasm # You need to set GOOS=js and GOARCH=wasm for this to work
     ```
 
-2. Open your browser and navigate to `http://127.0.0.1:5000`.
+2. Open your browser and navigate to `http://127.0.0.1:8000`.
 
 ## Project Structure
 
 Here is an overview of the project structure:
 
 ```
-flask-eso-dashboard/
-├── app.py                 # Main Flask application
-├── api_routes.py          # API v1 routes
-├── extensions.py          # Add extensions like cache to app
-├── .github/workflows/     # GitHub workflows
-│   └── pylint.yml         # Pylint
-├── templates/             # HTML templates for the app
-│   └── dashboard.html     # Main dashboard page
-├── static/                # Static assets (CSS, JS, images, videos)
-│   └── background-video.mp4
-├── .vscode/               # VS Code configuration files
-│   └── launch.json        # Debugging configuration
-├── .gitattributes         # Git LFS file
-├── .gitignore             # Git ignore file
-├── requirements.txt       # Python dependencies
+go-eso-dashboard/
+├── WIP ----
 ├── LICENSE                # MIT license
 ├── README.md              # Project documentation
 └── readme.png             # Project overview
