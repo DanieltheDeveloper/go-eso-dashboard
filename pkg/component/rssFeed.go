@@ -1,4 +1,4 @@
-package rssFeed
+package component
 
 import (
 	"encoding/json"
@@ -21,6 +21,9 @@ const maxRSSItems = 3
 
 // rssFeedCacheDuration is the duration for which RSS feed data is cached.
 const rssFeedCacheDuration = 24 * time.Hour
+
+// errorFetchingRSSFeed is the error message displayed when fetching the RSS feed fails.
+const errorFetchingRSSFeed = "Error fetching RSS feed"
 
 // RSSFeedResponse is struct that represents the RSS feed data.
 type rssFeedResponse struct {
@@ -59,30 +62,30 @@ func fetchRSSFeed(ctx app.Context) app.UI {
 		req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 		if err != nil {
 			log.Println("Error creating request:", err)
-			return app.Span().Text("Error fetching RSS feed")
+			return app.Span().Text(errorFetchingRSSFeed)
 		}
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
 			log.Println("Error making request:", err)
-			return app.Span().Text("Error fetching RSS feed")
+			return app.Span().Text(errorFetchingRSSFeed)
 		}
 		defer resp.Body.Close()
 
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Println("Error reading response:", err)
-			return app.Span().Text("Error fetching RSS feed")
+			return app.Span().Text(errorFetchingRSSFeed)
 		}
 
 		err = json.Unmarshal(body, &rssFeed)
 		if err != nil {
 			log.Println("Error parsing JSON:", err)
-			return app.Span().Text("Error fetching RSS feed")
+			return app.Span().Text(errorFetchingRSSFeed)
 		}
 	}
 
 	// Set state value to expire in 24 hours
-	ctx.SetState("rssFeedResponse", rssFeed).Persist().ExpiresAt(time.Now().Add(rssFeedCacheDuration))
+	ctx.SetState("rssFeedResponse", rssFeed).Persist().ExpiresIn(rssFeedCacheDuration) // TODO - ExpiresAt is always 0001-01-01T00:00:00Z inside local storage!?
 
 	// Wrap the items in a div
 	div := app.Div().Class("rss-feed").Class("d-flex flex-column gap-3")
@@ -93,6 +96,7 @@ func fetchRSSFeed(ctx app.Context) app.UI {
 		pubDate, err := time.Parse("2006-01-02 15:04:05", item.PubDate)
 		if err != nil {
 			log.Println("Error parsing date: ", err)
+			continue
 		}
 
 		itemsDiv[i] = app.Div().Class("relative block bg-gray-900 border border-gray-900 shadow-lg rounded overflow-hidden").
@@ -109,6 +113,11 @@ func fetchRSSFeed(ctx app.Context) app.UI {
 							),
 					),
 			)
+	}
+
+	// Check if itemsDiv is empty
+	if len(itemsDiv) == 0 {
+		return app.Div().Text("Error parsing RSS feed")
 	}
 
 	div.Body(itemsDiv...)

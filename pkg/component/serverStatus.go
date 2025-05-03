@@ -1,4 +1,4 @@
-package serverStatus
+package component
 
 import (
 	"log"
@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/DanieltheDeveloper/go-eso-dashboard.git/pkg/constant"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
@@ -52,7 +53,7 @@ func (s serverRegion) String() string {
 	return string(s)
 }
 
-// RSSFeed is a component that displays an RSS feed.
+// ServerStatus is a component that displays the server status.
 type ServerStatus struct {
 	app.Compo
 	ServerStatus app.UI
@@ -60,9 +61,6 @@ type ServerStatus struct {
 
 // serverStatusCacheDuration is the duration for which the data is cached.
 const serverStatusCacheDuration = 5 * time.Minute
-
-// serverStatusCacheDuration is the duration for which the data is cached.
-const fetchTimeout = 10 * time.Second
 
 // OnMount Check if the app is installable and set the state according.
 func (s *ServerStatus) OnMount(ctx app.Context) {
@@ -127,9 +125,10 @@ func fetchServerStatus(ctx app.Context) app.UI {
 
 	// Create HTTP client with timeout
 	client := &http.Client{
-		Timeout: fetchTimeout,
+		Timeout: constant.FetchTimeout,
 	}
 
+	// TODO - Add origins API to avoid CORS issues
 	// Make request through CORS proxy
 	req, err := http.NewRequestWithContext(
 		ctx,
@@ -195,7 +194,7 @@ func fetchServerStatus(ctx app.Context) app.UI {
 	statusDiv := app.Div().Body(statusList...)
 
 	// Cache the result
-	ctx.SetState("serverStatusResponse", serverStatus).Persist().ExpiresIn(serverStatusCacheDuration)
+	ctx.SetState("serverStatusResponse", serverStatus).Persist().ExpiresIn(serverStatusCacheDuration) // TODO - ExpiresAt is always 0001-01-01T00:00:00Z inside local storage!?
 
 	return statusDiv
 }

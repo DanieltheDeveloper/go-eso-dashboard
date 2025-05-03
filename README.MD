@@ -30,8 +30,8 @@ Simple Go-App PWA ESO dashboard with caching support for local deployment
 
 1. Run the application:
     ```bash
-        go build # For binary
-        go build -o web/app.wasm # You need to set GOOS=js and GOARCH=wasm for this to work
+        go build ./cmd/go-eso-dashboard # For binary
+        go build -o ../../web/app.wasm # You need to set GOOS=js and GOARCH=wasm for this to work
     ```
 
 2. Open your browser and navigate to `http://127.0.0.1:8000`.

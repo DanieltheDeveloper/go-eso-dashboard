@@ -4,8 +4,7 @@ package page
 // TODO - Get Server Status from API, set as local storage and use it to update the UI every 3 minutes (Without site refresh?! https://go-app.dev/components)
 
 import (
-	rssFeed "github.com/DanieltheDeveloper/go-eso-dashboard.git/pkg/component/rss-feed"
-	serverStatus "github.com/DanieltheDeveloper/go-eso-dashboard.git/pkg/component/server-status"
+	"github.com/DanieltheDeveloper/go-eso-dashboard.git/pkg/component"
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
 
@@ -14,8 +13,11 @@ import (
 // embedding app.Compo into a struct.
 type Dashboard struct {
 	app.Compo
-	RSSFeed rssFeed.RSSFeed
-	ServerStatus serverStatus.ServerStatus
+	RSSFeed component.RSSFeed
+	ServerStatus component.ServerStatus
+	CurrentPlayers component.CurrentPlayers
+	PeakPlayerCount component.PeakPlayerCount
+	AllPeakPlayerCount component.AllPeakPlayerCount
 	isAppInstallable bool
 }
 
@@ -73,7 +75,7 @@ func (d *Dashboard) Render() app.UI {
 					app.Div().Class("card text-center").Body(
 						app.Div().Class("card-header bg-info text-white").Text("Active Users"),
 						app.Div().Class("card-body").Body(
-							app.H5().Class("card-title").ID("activeUsers").Text("0"),
+							app.H5().Class("card-title").ID("activeUsers").Body(&d.CurrentPlayers),
 						),
 					),
 				),
@@ -81,7 +83,7 @@ func (d *Dashboard) Render() app.UI {
 					app.Div().Class("card text-center").Body(
 						app.Div().Class("card-header bg-warning text-white").Text("24 Hour Peak"),
 						app.Div().Class("card-body").Body(
-							app.H5().Class("card-title").ID("24Peak").Text("0"),
+							app.H5().Class("card-title").ID("24Peak").Body(&d.PeakPlayerCount),
 						),
 					),
 				),
@@ -89,7 +91,7 @@ func (d *Dashboard) Render() app.UI {
 					app.Div().Class("card text-center").Body(
 						app.Div().Class("card-header bg-danger text-white").Text("All-Time Peak"),
 						app.Div().Class("card-body").Body(
-							app.H5().Class("card-title").ID("allPeak").Text("0"),
+							app.H5().Class("card-title").ID("allPeak").Body(&d.AllPeakPlayerCount),
 						),
 					),
 				),

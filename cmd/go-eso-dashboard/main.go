@@ -3,9 +3,16 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/DanieltheDeveloper/go-eso-dashboard.git/pkg/page"
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
+)
+
+const (
+	serverReadWriteTimeout	= 15
+	serverIdleTimeout       = 60
+	serverReadHeaderTimeout = 10
 )
 
 // The main function is the entry point where the app is configured and started.
@@ -59,10 +66,19 @@ func main() {
 			"/web/background-video.mp4",
 		},
 	})
+	
+	// Create a server with proper timeout settings
+	srv := &http.Server{
+		Addr:              ":8000",
+		Handler:           nil,
+		ReadTimeout:       serverReadWriteTimeout * time.Second,
+		WriteTimeout:      serverReadWriteTimeout * time.Second,
+		IdleTimeout:       serverIdleTimeout * time.Second,
+		ReadHeaderTimeout: serverReadHeaderTimeout * time.Second,
+	}
 
-	// The server is started on port 8000. The ListenAndServe function is a blocking
-	// call, which means that the code below it will never be executed.
-	if err := http.ListenAndServe(":8000", nil); err != nil {
+	// Start the server with proper timeout configurations
+	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
 }
